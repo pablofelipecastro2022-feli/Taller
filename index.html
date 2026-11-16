@@ -144,7 +144,7 @@ function PDF(){
 }
 
 const K='tallerApp1';
-const INT0={'Cambio de aceite':10000,'Cambio de filtro de aceite':10000,'Cambio de filtro de aire':10000,'Cambio de filtro de nafta':10000,'Cambio de filtro de habitáculo':10000,'Cambio de correa de distribución':80000,'Cambio de correa auxiliar':80000,'Cambio de cadena de distribución':0,'Cambio de bujías':30000,'Cambio de líquido refrigerante':40000,'Cambio de líquido de frenos':40000,'Cambio de pastillas de freno':0};
+const INT0={'Cambio de aceite':10000,'Cambio de filtro de aceite':10000,'Cambio de filtro de aire':10000,'Cambio de filtro de nafta':10000,'Cambio de filtro de habitáculo':10000,'Cambio de correa de distribución':80000,'Cambio de correa auxiliar':80000,'Cambio de cadena de distribución':0,'Cambio de bujías':30000,'Cambio de líquido refrigerante':40000,'Cambio de líquido de frenos':40000,'Cambio de pastillas de freno':0,'Cambio de aceite de caja':0,'Cambio de batería':0,'Cambio de escobillas':0,'Cambio de lámparas':0};
 const TRAB=Object.keys(INT0);
 let D=null;
 try{D=JSON.parse(localStorage.getItem(K))}catch(x){}
@@ -409,11 +409,13 @@ function vClientes(){
   <h2>Clientes (${D.clientes.length})</h2>${l||'<p class="vacio">Todavía no cargaste clientes.</p>'}
   <h2>Cada cuántos km se cambia</h2><details class="card"><summary>Ver y cambiar los km de cada servicio</summary>
   <p class="vacio">Poné 0 si ese servicio no lleva aviso.</p>${ints}
-  <label>Avisar al cliente cuando falten (km)<input type="number" inputmode="numeric" value="${D.margen}" onchange="setMargen(this.value)"></label></details>
+  <label>Avisar al cliente cuando falten (km)<input type="number" inputmode="numeric" value="${D.margen}" onchange="setMargen(this.value)"></label>
+  <button class="sec" onclick="resetInt()">Volver a los km recomendados</button></details>
   <h2>Copia de seguridad</h2><div class="card"><p>Los datos quedan guardados solo en este aparato. Hacé una copia seguido.</p>
   <div class="row"><button onclick="copiar()">Copiar copia</button><button class="sec" onclick="restaurar()">Restaurar copia</button></div></div>`;
 }
 function setInt(i,v){D.interv[TRAB[i]]=parseInt(v)||0;save()}
+function resetInt(){if(!confirm('Esto vuelve todos los km a los valores recomendados (aceite y filtros 10.000, correas 80.000). ¿Seguir?'))return;D.interv=Object.assign({},INT0);save();render()}
 function setMargen(v){D.margen=parseInt(v)||1000;save()}
 function addCli(){
   const n=$('#cn').value.trim();
