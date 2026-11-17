@@ -397,7 +397,8 @@ function vClientes(){
   const l=D.clientes.map(c=>{
     const h=D.servicios.filter(s=>s.cid===c.id&&s.estado==='hecho').sort((a,b)=>b.fechaHecho.localeCompare(a.fechaHecho));
     return `<details class="card"><summary>${e(c.nombre)} · ${e(c.patente)}</summary>
-    <p>${e(c.auto)}<br>Tel: ${e(c.tel)}<br>Hace unos ${nk(c.kmMes||1000)} km por mes</p>
+    <p>${e(c.auto)}<br>Tel: ${e(c.tel)}</p>
+    <label>Km que hace por mes (aprox.)<input type="number" inputmode="numeric" value="${c.kmMes||1000}" onchange="setKmMes('${c.id}',this.value)"></label>
     ${h.length?h.map(s=>`<p>• ${fd(s.fechaHecho)} · ${nk(s.km||0)} km<br>${e(s.trabajos.join(', '))}${s.aceite?' · '+e(s.aceite):''}${s.costo?' · $'+e(s.costo):''}<br><span class="row"><button class="sec" onclick="reenv('${s.id}')">Resumen WhatsApp</button><button onclick="pdfServicio('${s.id}')">PDF</button></span></p>`).join(''):'<p class="vacio">Sin servicios hechos todavía.</p>'}
     <button class="del" onclick="delCli('${c.id}')">Borrar cliente</button></details>`}).join('');
   const ints=TRAB.map((t,i)=>`<label>${t} (km)<input type="number" inputmode="numeric" value="${D.interv[t]}" onchange="setInt(${i},this.value)"></label>`).join('');
@@ -418,6 +419,7 @@ function vClientes(){
 }
 function setInt(i,v){D.interv[TRAB[i]]=parseInt(v)||0;save()}
 function resetInt(){if(!confirm('Esto vuelve todos los km a los valores recomendados (aceite y filtros 10.000, correas 80.000). ¿Seguir?'))return;D.interv=Object.assign({},INT0);save();render()}
+function setKmMes(id,v){const c=D.clientes.find(x=>x.id===id);if(c){c.kmMes=parseInt(v)||1000;save()}}
 function setMargen(v){D.margen=parseInt(v)||1000;save()}
 function addCli(){
   const n=$('#cn').value.trim();
