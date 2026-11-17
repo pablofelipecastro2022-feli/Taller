@@ -343,16 +343,18 @@ async function pdfServicio(id){
   const blob=new Blob([bytes],{type:'application/pdf'});
   const nom='Servicio-'+((c.patente||c.nombre||'auto').replace(/[^A-Za-z0-9]+/g,''))+'-'+s.fechaHecho+'.pdf';
   const f=new File([blob],nom,{type:'application/pdf'});
+  let motivo='sin soporte';
   try{
-    if(navigator.canShare&&navigator.canShare({files:[f]})){
-      await navigator.share({files:[f],title:'Servicio realizado',text:'Servicio realizado '+deT()});
-      return;
-    }
-  }catch(err){if(err&&err.name==='AbortError')return}
+    await navigator.share({files:[f],title:'Servicio realizado'});
+    return;
+  }catch(err){
+    if(err&&err.name==='AbortError')return;
+    motivo=(err&&err.name)||motivo;
+  }
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=nom;
   document.body.appendChild(a);a.click();a.remove();
   setTimeout(()=>URL.revokeObjectURL(a.href),20000);
-  alert('El PDF se guardó en Descargas. Adjuntalo en el WhatsApp del cliente.');
+  alert('Este aparato no abrió el menú de compartir ('+motivo+'). El PDF se guardó en Descargas: adjuntalo en el WhatsApp del cliente.');
 }
 
 /* ---------- Avisos de próximo cambio ---------- */
